@@ -1,3 +1,5 @@
+// cest gere les differents scripts de chaque page
+
 class Script {
     constructor(page) {
         if(page in this)

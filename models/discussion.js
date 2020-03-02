@@ -6,18 +6,29 @@ module.exports = (sequelize, DataTypes) => {
     Messages: {
       type: DataTypes.VIRTUAL,
       async get() {
+        // on recupère toutes les messages en fonction de l'id de la discussion
         return await (require('../models').Message.findAll({where: {discussion: this.id}}));
       },
+      // on peut ajouter des message dans la discussion
       set(messages) {
+        // toutes le return ce met automatiquement dans la liste _messages
         this.Messages.then(_messages => {
+          // je creer une variable temporaire
           let messageToAdd = null;
           if(_messages.length > 0)
+            // on boucle dans l'objet courant
+            // forof recupère lo'bjet courant
+            // forin recupère l'index
             for(let _message of _messages)
               for(let message of messages)
+                // si l'id de message du return est different de l'id message du tableau
+                // on  l'ajoute
                 if(message.id !== _message.id)
                   messageToAdd = message;
           else
+            // message de l'add egale à message à setter
             messageToAdd = messages[0];
+          // si message egale a null on le crée et on l'affiche dans le server
           if(messageToAdd !== null)
             require('../models').Message.create(messageToAdd).then(createdMessage =>
                 console.log(`Le message avec l'id ${createdMessage.id} à été créé !`));

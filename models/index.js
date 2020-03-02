@@ -1,3 +1,6 @@
+// page qui exporte les models dans un seul module
+// gnérér automoatiquement
+
 'use strict';
 
 require('dotenv').config({path: __dirname + '/../.env'});

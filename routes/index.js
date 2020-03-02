@@ -4,8 +4,13 @@ const {sequelize} = require('../modules/sequelize');
 const db = require('../models');
 
 // PAGES
+// route pour la page d'accuille
 router.get('/', (req, res) => {
+    // authenticate: methode permet de se connecter
+    // pas comme une session qui stock des informations pour un certain temps
   sequelize.authenticate().then(() => {
+      // render : rendre la page
+      // c'est des variables utilisé dans le template
     res.render('index', { title: 'Messenger' });
   }).catch(err => {
     console.log(err);
@@ -13,18 +18,36 @@ router.get('/', (req, res) => {
   });
 });
 
+// cette route renvoi la page login
 router.get('/login', (req, res) => {
   res.render('login', {title: 'Messenger'});
 });
 
+// route pour la video
 router.get('/video', (req, res) => {
     res.render('video', {title: 'Messenger'});
 });
 
-// API
+// API : code miese a dispostion pour gerer des fonctions spéciqiue
+// API netflicks pour gerer des videos!;
+// API chat pour gerer des discusiion
+//
 router.post('/api/login', (req, res) => {
-  sequelize.authenticate().then(() => (async (email, password) => await db.User.findOne({where: {email, password}}))(req.body.email, req.body.password))
-      .then(async user => res.json(await user.JSON))
+    // si le requette http avec le mot de passe et l'email  (via le formulaire) alors ou renvoit l'utilisateur
+    // sinon on affiche une erreur
+  sequelize.authenticate().then(() => (
+      async (email, password) =>
+          await db.User.findOne({where: {email, password}})
+      // après avoir chercher la premier occurence de email et password
+      // tu les affecte au paramètresz email et password si je les trouve
+  )(req.body.email, req.body.password))
+      // async / await est une façon synplifiée d'utiliser les promesses.
+      // assync signifie qu'on renvoie une promesse donc une fonction asynchrone et await est utiliser pour exectuter une fonction asynchrone.
+
+  // tu les parse en json en modifiant quelques paramètres (mot de passe supprimé...)
+      .then(async user =>
+          res.json(await user.JSON))
+      // catch sur un promesse est toujours le cas d'erreur
       .catch(err => res.json({error: err.message}));
 });
 
