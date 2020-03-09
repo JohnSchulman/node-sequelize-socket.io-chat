@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     password: DataTypes.STRING,
     avatar: DataTypes.STRING,
+    // la jointure pour chercher les discussion de chaque user
     // virtual properties
     MyDiscussions: {
       // propriété pas stocker dans un table
@@ -19,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         // tu boucle sur les discussion et puis tu les affecte au tableau
         let myDiscussions = [];
         for(let discussion of discussions) {
+          // on met toutes l'objets courant  dans message
           let messages = await discussion.Messages;
           // tableau temporaire
           let myMessagesForThisDiscussion = [];
@@ -55,6 +57,10 @@ module.exports = (sequelize, DataTypes) => {
           // seul contraint les deux tableau doit avoir la meme taille
 
           // les tableau les id des discussions de l'utilisateur
+          // pour eviter le reference circulaire c'est à dire une discussion appel des messages qui appellent des users qui appellent des discussion ...
+          // On a un tableau mydiscussion et puis
+          // on creer une deuxième tableau grace a map qui renvoit juste un tableau des id de mydiscussion
+
           my_discussions: (await this.MyDiscussions).map(d => d.id),
           createdAt: this.createdAt,
           updatedAt: this.updatedAt

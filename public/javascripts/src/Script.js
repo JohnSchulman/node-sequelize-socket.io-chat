@@ -1,8 +1,11 @@
 // cest gere les differents scripts de chaque page
 
 class Script {
+    // le nom de la page correspond a une methode de la class script
     constructor(page) {
+        // si la page est dans l'objet courant
         if(page in this)
+            // tu execute ton fonction
             this[page]();
     }
 

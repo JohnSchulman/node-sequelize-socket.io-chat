@@ -28,14 +28,18 @@ sequelize.authenticate().then(() => {
         db.Discussion.create({name: discussion.name})
             .then(discussion => console.log(`La discussion '${discussion.name}' à été créé !!`));
 
-    for(let message of messages)
-        db.User.findOne({where: {id: message.author}}).then(user =>
-            db.Message.create({
-                text: message.text.replace('%name%', user.first_name),
-                author: message.author,
-                discussion: message.discussion
-            }).then(message =>
-                console.log(`Le message '${message.text}' à été créé dans la discussion '${message.Discussion.name}'`)
-            )
+    for(let message of messages) {
+        db.User.findOne({where: {id: message.author}}).then(user => {
+                if (user) {
+                    db.Message.create({
+                        text: message.text.replace('%name%', user.first_name),
+                        author: message.author,
+                        discussion: message.discussion
+                    }).then(message =>
+                        console.log(`Le message '${message.text}' à été créé dans la discussion '${message.Discussion.name}'`)
+                    )
+                }
+            }
         );
+    }
 }).catch(err => console.log(err));

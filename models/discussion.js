@@ -1,12 +1,14 @@
 'use strict';
+// une fonction qui permet de definir le model discussion
 module.exports = (sequelize, DataTypes) => {
   const Discussion = sequelize.define('Discussion', {
     name: DataTypes.STRING,
     // virtual properties
     Messages: {
       type: DataTypes.VIRTUAL,
+
       async get() {
-        // on recupère toutes les messages en fonction de l'id de la discussion
+        // requette ou on recupère toutes les messages de la bdd en fonction de l'id de la discussion
         return await (require('../models').Message.findAll({where: {discussion: this.id}}));
       },
       // on peut ajouter des message dans la discussion

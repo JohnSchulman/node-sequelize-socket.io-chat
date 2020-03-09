@@ -1,9 +1,11 @@
 class Authors extends Observable {
     constructor() {
         super();
+        // propriété virutel
         this._authors = [];
     }
 
+    // ma fonction qui se lance des la proprété virutelle change
     onAuthorsChange(_old, _new) {
         let authors = '';
         if(_new.length === 1 || _new.length === 2)

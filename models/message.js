@@ -1,4 +1,5 @@
 'use strict';
+// une fonction qui permet de definir le model message
 module.exports = (sequelize, DataTypes) => {
   const Message = sequelize.define('Message', {
     text: DataTypes.STRING,
@@ -20,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
       // Dans discuszsion tu peux recuperer la liste de message a discussion de la requete
       // Dans message tu peux gerer l'auteur du message
       // Dans message tu peux aussi trouver l'objet du discussion
-      // ttu peux gerer un donne externe de l'utilisateur
+      // Dans user je peux chercher les discussions de chaque user
+      // tu peux gerer un donne externe de l'utilisateur
       async get() {
         const db = require('../models');
         // si il y a un auteur d'enrigister
