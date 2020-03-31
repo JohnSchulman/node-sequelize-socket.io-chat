@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         // si il y a un auteur d'enrigister
         if(this.author !== undefined && this.author !== 0 && this.author !== null) {
           // tu return la seul occurence de l'auteur en fonction de sont id
+          // c'est ici on dire ou je fais ma requête
           return await db.User.findOne({where: {id: this.author}});
         }
         // sinon on return directement null
