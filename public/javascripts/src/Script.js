@@ -1,5 +1,6 @@
-// cest gere les differents scripts de chaque page
+// c'est les évenement cote front avec des fonctions
 
+// cest gere les differents scripts de chaque page
 class Script {
     // le nom de la page correspond a une methode de la class script
     constructor(page) {
@@ -194,14 +195,20 @@ class Script {
 
     /** page scripts */
     index() {
+        // je recupère l'utilisateur courant
         let user = localStorage.getItem('user');
+        // s'il existe
         if(user !== undefined && user !== null) {
+            // je le transforme de json en objet
             user = JSON.parse(user);
+            // tu recupère ton prenom
             const my_name = user.first_name;
+            // je definie le protocole du websocket en fonction du protocle http courant
             let protocol = 'ws';
             if(window.location.protocol === 'https:') {
                 protocol += 's';
             }
+            // tu creer ton socket avec la string de connexion et comme deuxieme parametre ton nom
             let server = new Socket(`${protocol}://${window.location.host}/`, my_name);
 
             let peer = new Peer(this.peer_id);
@@ -317,6 +324,7 @@ class Script {
                     id: server.id,
                     discussion: {
                         id: current_discussion_id
+                        // quand la propriété et la variable c'est la même on peut laisser juste un des noms
                     }, user
                 });
             };

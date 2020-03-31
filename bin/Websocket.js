@@ -1,7 +1,10 @@
+// evenement cote back
 module.exports = class Websocket {
     get socket() {
         return this._socket;
     }
+    // export une fonction et je la passe la serveur http en
+    // inclue la biblioteque et instancie la socket
     set socket(http_server) {
         this._socket = require('socket.io')(http_server)
     }
@@ -9,11 +12,16 @@ module.exports = class Websocket {
     get client() {
         return this._client;
     }
+
+    // c'est le socket client
+    // la save et le met grâce à a push dans le socket
     set client(client) {
         this._client = client;
         this.client.emit('save_client', {id: client.id});
         this.socket.sockets.rooms.push(this.client);
     }
+
+    // permet de recuperer n'importe quelle client en fonction de sont idée
     get_client(id) {
         for(let c of this.socket.sockets.rooms) {
             if(c.id === id) {
@@ -22,17 +30,32 @@ module.exports = class Websocket {
         }
     }
 
+    // Client c'est juste le socket
+    // user correspond details personnels : firstname, tel, etc..
+    // rooms c'est un propriété de socket qui est un tableau vide
     set user(user) {
         for(let room_id in this.socket.sockets.rooms) {
+            // on test si le client qui vient de se connecter est bien enregistrer sur le serveur
             if(this.socket.sockets.rooms[room_id].id === this.client.id) {
+                // si la condition est vrai on l'enregistre le user du socket dans le client courant
                 this.socket.sockets.rooms[room_id].user = user;
             }
         }
     }
 
+    // on transform le user en json et on le met dans le tableau (grâce a map) du socket
     get users() {
         return this.socket.sockets.rooms.map(room => JSON.parse(room.user));
     }
+
+    // ici c'est singleton qui retourne toujours le meme instance
+    // on verifie mon objet sequalize qui contient toujours lo module de connexion
+    // si l'objet n'existe pas j'ajoute mon objet perso de mes module
+    // sinon je retourne directement mon objet qui est stocker dans mon prorpriété _sequelize
+
+    // quand tu doit avoir un getter qui ne doit pas avoir de paramêtre
+    // je preivliegie les getter en form de propriété en non en forme de fonction
+
 
     get sequelize() {
         if(this._sequelize === null || this._sequelize === undefined) {
@@ -48,13 +71,20 @@ module.exports = class Websocket {
         return this._db;
     }
 
+    // permet de diffuser le message
     broadcast(id, channel, message) {
+        // je boucle sur les clients socket connecteé
         for(let client of this.socket.sockets.rooms) {
+            // si le client est different du client passé en paramètres
             if(client.id !== id) {
+                // j'envoie à toutes les client sauf moi
                 client.emit(channel, message);
             }
         }
     }
+
+    // c'est un wrapper de client.emit
+    // envoie le message qu'a moi
     emit(id, channel, message) {
         let client;
         if((client = this.get_client(id)) !== undefined) {
